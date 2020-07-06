@@ -85,7 +85,6 @@ for i in edges_bud:
         pass
     else:
         points_neighbor[p2] = points_neighbor.get(p2, '') + p1
-print(points_neighbor)
 
 points_bud = []
 for key, value in points.items():
@@ -125,28 +124,6 @@ def Normalvector_by_3points(point1,point2,point3):
     N=np.cross(AB,AC)
     L=np.linalg.norm(N)
     return N[0]/L
-
-# Smooth a list.
-def smooth(d):
-    sd=[]
-    for i in d:
-        for j in sd:
-            if abs(i-j)<0.1:
-                i=j
-                break
-        sd.append(i)
-    return sd
-
-###Find point's positions in points list.
-def find_in_points(points,point,atol=0.1):
-    if len(points)==0:
-        return []
-    diff=np.array(points)-np.array(point)[None,:]
-    return np.where(np.all(np.abs(diff)<atol,axis=1))[0]
-
-###Judge point is or not in points_list.
-def is_in_points(points,point):
-    return len(find_in_points(points,point))>0
 
 ###Return the positions (x',y') when (x1,y1) revolve thtea(0<thrat<360) around (x2,y2)
 def revolved(p1,p2,theta):
@@ -204,6 +181,7 @@ for point in points_neighbor.keys():
         ontopsite=site2
     Ontopsites.append(ontopsite)
 
+#Write file
 p=read('pt.xyz')
 for i in range(len(Ontopsites)):
     p.append(Atom('H',position=Ontopsites[i]))
