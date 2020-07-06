@@ -1,2 +1,2 @@
 # Ptcluster
-Site recognitioon for Pt cluster   
+Site recognition and Symmetry test for Pt cluster.   
