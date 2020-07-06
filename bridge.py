@@ -55,7 +55,6 @@ for triangle in surfaces_bud:
     edges_neighbor[l1]=edges_neighbor.get(l1,[])+triangle
     edges_neighbor[l2] = edges_neighbor.get(l2,[])+triangle
     edges_neighbor[l3] = edges_neighbor.get(l3,[])+triangle
-print(edges_neighbor)
 
 edges_bud=[]
 for key,value in edges.items():
@@ -85,8 +84,6 @@ for i in edges_bud:
     else:
         points_neighbor[p2] = points_neighbor.get(p2, '') + p1
 
-print(points_neighbor)
-
 points_bud = []
 for key, value in points.items():
     key = key[1:-1]  # delete '[' and ']'
@@ -105,7 +102,6 @@ for i in points_bud:
     Y_center=y[i[0]]+Y_center
     Z_center=z[i[0]]+Z_center
 P_center=[X_center/P_number,Y_center/P_number,Z_center/P_number]
-print('Central point coordinate:',P_center)
 
 ###Euclidean distance between two points###
 def Euclidean_distance(point1,point2):
@@ -127,66 +123,13 @@ def Normalvector_by_3points(point1,point2,point3):
     L=np.linalg.norm(N)
     return N[0]/L
 
-# Smooth a list.
-def smooth(d):
-    sd=[]
-    for i in d:
-        for j in sd:
-            if abs(i-j)<0.1:
-                i=j
-                break
-        sd.append(i)
-    return sd
-
-###Find point's positions in points list.
-def find_in_points(points,point,atol=0.1):
-    if len(points)==0:
-        return []
-    diff=np.array(points)-np.array(point)[None,:]
-    return np.where(np.all(np.abs(diff)<atol,axis=1))[0]
-
-###Judge point is or not in points_list.
-def is_in_points(points,point):
-    return len(find_in_points(points,point))>0
-
-###Return the positions (x',y') when (x1,y1) revolve thtea(0<thrat<360) around (x2,y2)
-def revolved(p1,p2,theta):
-    x1=p1[0]
-    y1=p1[1]
-    x2=p2[0]
-    y2=p2[1]
-    x=(x1-x2)*math.cos(theta)-(y1-y2)*math.sin(theta)+x2
-    y=(x1-x2)*math.sin(theta)+(y1-y2)*math.cos(theta)+y2
-    return [x,y]
-print(revolved([-1,0],[0,0],math.pi/2))
-
-###Hollow sites###
-Hollowsites=[]
-for triangle in surfaces_bud:
-    point1=np.array([x[triangle[0]],y[triangle[0]],z[triangle[0]]])
-    point2=np.array([x[triangle[1]],y[triangle[1]],z[triangle[1]]])
-    point3=np.array([x[triangle[2]],y[triangle[2]],z[triangle[2]]])
-    point_mean=(point1+point2+point3)/3
-    n=Normalvector_by_3points(point1,point2,point3)
-    site1=point_mean+1.5*n
-    site2=point_mean-1.5*n
-    d1=Euclidean_distance(P_center,site1)
-    d2=Euclidean_distance(P_center,site2)
-    if d1>d2:
-        Hollowsites.append(site1)
-    else:
-        Hollowsites.append(site2)
-
-
-###Hollow sites###
+###Bridge sites###
 Bridgesites=[]
 for edge in edges_neighbor.keys():
     edge_neighbor=edges_neighbor[edge]
     edge=edge[1:-1]
     edge=edge.split(',')
     edge=[int(i) for i in edge]
-    print(type(edge))
-    print(edge)
     point1 = np.array([x[edge[0]],y[edge[0]],z[edge[0]]])
     point2 = np.array([x[edge[1]],y[edge[1]],z[edge[1]]])
     point_mean_edge=(point1+point2)/2
@@ -224,6 +167,8 @@ for edge in edges_neighbor.keys():
     n=(n1+n2)/np.linalg.norm(n1+n2)
     bridge_site=point_mean_edge+1.5*n
     Bridgesites.append(bridge_site)
+
+#Write file
 p=read('pt.xyz')
 for i in range(len(Bridgesites)):
     p.append(Atom('H',position=Bridgesites[i]))
