@@ -132,6 +132,7 @@ for edge in edges_neighbor.keys():
     edge=[int(i) for i in edge]
     point1 = np.array([x[edge[0]],y[edge[0]],z[edge[0]]])
     point2 = np.array([x[edge[1]],y[edge[1]],z[edge[1]]])
+    L_thro=Euclidean_distance(point1,point2)
     point_mean_edge=(point1+point2)/2
     triangel_neighbor1 = edge_neighbor[0:3]
     triangel_neighbor2 = edge_neighbor[3:]
@@ -166,7 +167,8 @@ for edge in edges_neighbor.keys():
         n2=-n2
     n=(n1+n2)/np.linalg.norm(n1+n2)
     bridge_site=point_mean_edge+1.5*n
-    Bridgesites.append(bridge_site)
+    if L_thro<=3:
+        Bridgesites.append(bridge_site)
 
 #Write file
 p=read('pt.xyz')
